@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .getInput {
+            height: 400px;
+            width: 800px;
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .getInput form {
+            padding: 10px;
+        }
+
+        .getInput form input {
+            padding: 5px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        #usersList {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="getInput">
+            <h2>User Information Form</h2>
+            <form id="userForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+
+                <label for="age">Age:</label>
+                <input type="number" id="age" required>
+
+                <label for="city">City:</label>
+                <input type="text" id="city" required>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <h2 style="margin-left:20px;">All Users</h2>
+    <div id="usersList"></div>
+
+    <script>
+        // Handle form submit
+        document.getElementById('userForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const data = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                city: document.getElementById('city').value
+            };
+
+            await fetch('/submit', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            this.reset();
+            loadUsers(); // refresh users list
+        });
+
+        // Fetch all users from backend
+        async function loadUsers() {
+            const res = await fetch('/getUsers');
+            const users = await res.json();
+
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            users.forEach(u => {
+                usersList.innerHTML += `<p><strong>${u.name}</strong> (${u.age}) - ${u.city}</p>`;
+            });
+        }
+
+        // Load users when page first opens
+        loadUsers();
+    </script>
+</body>
+
+</html>
