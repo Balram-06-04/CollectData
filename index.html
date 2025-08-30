@@ -1,72 +1,175 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>User Form</title>
     <style>
+        /* Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        .container {
-            height: 100%;
+        body {
+            background: #f4f6f9;
+            color: #333;
+            min-height: 100vh;
+            width: 100vw;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-        }
-
-        .getInput {
-            height: 400px;
-            width: 800px;
-            border: 2px solid;
-            border-radius: 10px;
             padding: 30px;
         }
 
-        .getInput form {
-            padding: 10px;
+        .container {
+            border: 2px solid;
+            max-width: 80%;
+            height: 100%;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
         }
 
-        .getInput form input {
-            padding: 5px;
+        h1 {
+            font-size: 22px;
             margin-bottom: 10px;
-            display: block;
+            color: #444;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
         }
 
         #usersList {
-            margin: 20px;
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        #usersList h2 {
+            margin-bottom: 15px;
+            color: #444;
+            font-size: 18px;
+        }
+
+        .user-card {
             padding: 10px;
-            border: 1px solid #aaa;
-            border-radius: 10px;
-            max-width: 400px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-card:last-child {
+            border-bottom: none;
+        }
+
+        .user-card strong {
+            color: #007bff;
+        }
+
+        /* Responsive styles for mobile */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+                /* reduce body padding */
+            }
+
+            .container,
+            #usersList {
+                max-width: 100%;
+                /* full width on mobile */
+                width: 100%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="getInput">
-            <h1>This is my first Backend Site</h1>
-            <h2>User Information Form</h2>
-            <form id="userForm">
-                <label for="name">Name:</label>
-                <input type="text" id="name" required>
+        <h1>My First Backend Site</h1>
+        <h2>User Information Form</h2>
+        <form id="userForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
 
-                <label for="age">Age:</label>
-                <input type="number" id="age" required>
+            <label for="age">Age:</label>
+            <input type="number" id="age" required>
 
-                <label for="city">City:</label>
-                <input type="text" id="city" required>
+            <label for="city">City:</label>
+            <input type="text" id="city" required>
 
-                <button type="submit">Submit</button>
-            </form>
-        </div>
+            <button type="submit">Submit</button>
+        </form>
     </div>
 
-    <h2 style="margin-left:20px;">All Users</h2>
-    <div id="usersList"></div>
+    <div id="usersList">
+        <h2>All Users</h2>
+        <!-- users will load here -->
+    </div>
 
     <script>
         // Handle form submit
@@ -95,10 +198,14 @@
             const users = await res.json();
 
             const usersList = document.getElementById('usersList');
-            usersList.innerHTML = '';
+            const title = `<h2>All Users</h2>`;
+            usersList.innerHTML = title;
 
             users.forEach(u => {
-                usersList.innerHTML += `<p><strong>${u.name}</strong> (${u.age}) - ${u.city}</p>`;
+                usersList.innerHTML += `
+          <div class="user-card">
+            <strong>${u.name}</strong> (${u.age}) - ${u.city}
+          </div>`;
             });
         }
 
