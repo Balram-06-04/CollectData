@@ -1,18 +1,18 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const User = require('./userSchema'); // your schema file
-const path = require('path');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const User = require("./userSchema");
+const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(bodyParser.json()); // parse JSON
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/getUserData', {
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
@@ -20,12 +20,12 @@ mongoose.connect('mongodb://localhost:27017/getUserData', {
 .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // Serve frontend
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // Handle form submission
-app.post('/submit', async (req, res) => {
+app.post("/submit", async (req, res) => {
     const { name, age, city } = req.body;
 
     try {
@@ -39,7 +39,7 @@ app.post('/submit', async (req, res) => {
 });
 
 // Get all users
-app.get('/getUsers', async (req, res) => {
+app.get("/getUsers", async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -51,5 +51,5 @@ app.get('/getUsers', async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
